@@ -30,6 +30,7 @@ describe("Math operations", () => {
   });
 });
 
+//advanced math
 describe("Advanced Math operations", () => {
   test("test square root", () => {
     expect(squareRoot(4)).toBe(2);
