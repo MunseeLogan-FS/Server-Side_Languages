@@ -28,6 +28,9 @@ describe("Math operations", () => {
       division(6, 0);
     }).toThrow("Division by zero is not allowed");
   });
+});
+
+describe("Advanced Math operations", () => {
   test("test square root", () => {
     expect(squareRoot(4)).toBe(2);
   });
