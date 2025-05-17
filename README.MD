@@ -5,3 +5,6 @@ module_1 has the assignment 1.4 Let's Code NodeJS
 
 ## testWithJest
 testWithJest has assignment 1.7 NodeJS Unit Testing
+
+## Async_Discussion
+Async_Discussion is for the assignment Async / Await Discussion
