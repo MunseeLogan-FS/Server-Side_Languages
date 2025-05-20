@@ -1,0 +1,29 @@
+const mongoose = require("mongoose");
+
+const heroSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "You are required to have an hero name."],
+    unique: [true, "Name must be unique."],
+    trim: true,
+    maxlength: [
+      50,
+      "Your name is too long, name cannot be longer than 50 characters.",
+    ],
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  power: {
+    type: [String],
+    required: [true, "All superheroes must have a power."],
+  },
+  city: {
+    type: String,
+    required: [true, "please add a description"],
+    maxlength: [50, "City name cannot be longer than 50 characters."],
+  },
+});
+
+module.exports = mongoose.model("Hero", heroSchema, "heroes");

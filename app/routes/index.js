@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const authorRoutes = require("./authorRoutes");
+const heroRoutes = require("./heroRoutes");
+const villainRoutes = require("./villainRoutes");
 
 router.get("/", (req, res) => {
   res
@@ -8,6 +9,7 @@ router.get("/", (req, res) => {
     .json({ success: true, message: `${req.method} - Request made` });
 });
 
-router.use("/authors", authorRoutes);
+router.use("/heroes", heroRoutes);
+router.use("/villains", villainRoutes);
 
 module.exports = router;

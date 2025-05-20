@@ -12,4 +12,11 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1", routeHandler);
 
+app.use("/*wildcard", (req, res) => {
+  res.status(404).json({
+    message: "This is not a valid endpoint",
+    sucess: false,
+  });
+});
+
 module.exports = app;
