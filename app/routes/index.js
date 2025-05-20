@@ -6,7 +6,11 @@ const villainRoutes = require("./villainRoutes");
 router.get("/", (req, res) => {
   res
     .status(200)
-    .json({ success: true, message: `${req.method} - Request made` });
+    .json({
+      success: true,
+      message: `${req.method} - Request made`,
+      availableRoutes: ["/heroes", "/villains"],
+    });
 });
 
 router.use("/heroes", heroRoutes);
