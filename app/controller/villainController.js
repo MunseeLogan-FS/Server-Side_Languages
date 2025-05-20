@@ -46,7 +46,7 @@ const createVillain = async (req, res) => {
   try {
     const newVillain = await Villains.create(villain);
     console.log("data:", newVillain);
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: `${req.method} - request to villains endpoint`,
     });
