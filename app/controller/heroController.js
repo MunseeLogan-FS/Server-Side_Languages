@@ -46,7 +46,8 @@ const createHero = async (req, res) => {
   try {
     const newHero = await Heroes.create(hero);
     console.log("data:", newHero);
-    res.status(200).json({
+    res.status(201).json({
+      data: newHero,
       success: true,
       message: `${req.method} - request to heroes endpoint`,
     });

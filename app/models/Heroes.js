@@ -21,7 +21,8 @@ const heroSchema = mongoose.Schema({
   },
   city: {
     type: String,
-    required: [true, "please add a description"],
+    required: [true, "Must have a city."],
+    trim: true,
     maxlength: [50, "City name cannot be longer than 50 characters."],
   },
 });
