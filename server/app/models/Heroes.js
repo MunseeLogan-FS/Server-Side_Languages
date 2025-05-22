@@ -25,6 +25,12 @@ const heroSchema = mongoose.Schema({
     trim: true,
     maxlength: [50, "City name cannot be longer than 50 characters."],
   },
+  enemies: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Villain",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Hero", heroSchema, "heroes");

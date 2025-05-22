@@ -1,17 +1,21 @@
 const Villains = require("../models/Villains");
+const Heroes = require("../models/Heroes");
+const messages = require("../utils/messages");
 
 const getAllVillains = async (req, res) => {
   try {
-    const villains = await Villains.find({});
+    const villains = await Villains.find({})
+      .populate("archNemesisId")
+      .select("-__v");
     res.status(200).json({
       data: villains,
       success: true,
-      message: `${req.method} - request to villains endpoint`,
+      message: messages.RETRIEVE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error retrieving villains",
+      message: messages.RETRIEVE_ERROR,
       error: error.message,
     });
   }
@@ -20,48 +24,63 @@ const getAllVillains = async (req, res) => {
 const getVillainById = async (req, res) => {
   const { id } = req.params;
   try {
-    const villain = await Villains.findById(id);
+    const villain = await Villains.findById(id)
+      .populate("archNemesisId")
+      .select("-__v");
     if (!villain) {
       return res.status(404).json({
         success: false,
-        message: `Villain with id: ${id} not found`,
+        message: messages.NOT_FOUND(id),
       });
     }
     res.status(200).json({
       data: villain,
       success: true,
-      message: `${req.method} - request to villains id: ${id}`,
+      message: messages.RETRIEVE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error retrieving villain",
+      message: messages.RETRIEVE_ERROR,
       error: error.message,
     });
   }
 };
 
 const createVillain = async (req, res) => {
-  const { villain } = req.body;
   try {
-    const newVillain = await Villains.create(villain);
-    console.log("data:", newVillain);
+    const { villain } = req.body;
+
+    const hero = await Heroes.findById(villain.archNemesisId);
+    if (!hero) {
+      return res.status(404).json({
+        success: false,
+        message: messages.NOT_FOUND(villain.archNemesisId),
+      });
+    }
+
+    villain.archNemesisId = hero._id;
+    const newVillain = new Villains(villain);
+    hero.enemies.push(newVillain._id);
+
+    await Promise.all([newVillain.save(), hero.save()]);
+
     res.status(201).json({
+      data: newVillain,
       success: true,
-      message: `${req.method} - request to villains endpoint`,
+      message: messages.CREATE_SUCCESS,
     });
   } catch (error) {
-    console.log("error:", error);
     if (error.name === "ValidationError") {
       return res.status(422).json({
         success: false,
-        message: "Validation error",
+        message: messages.VALIDATION_ERROR,
         error: error.message,
       });
     }
     res.status(500).json({
       success: false,
-      message: "Error creating villain",
+      message: messages.CREATE_ERROR,
       error: error.message,
     });
   }
@@ -76,18 +95,18 @@ const updateVillain = async (req, res) => {
     if (!villain) {
       return res.status(404).json({
         success: false,
-        message: `Villain with id: ${id} not found`,
+        message: messages.NOT_FOUND(id),
       });
     }
     res.status(200).json({
       data: villain,
       success: true,
-      message: `${req.method} - request to villains id:${id}`,
+      message: messages.UPDATE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Error updating villain information for id:${id}`,
+      message: messages.UPDATE_ERROR(id),
       error: error.message,
     });
   }
@@ -100,12 +119,12 @@ const deleteVillain = async (req, res) => {
     res.status(200).json({
       data: deletedVillain,
       success: true,
-      message: `${req.method} - request to villains id:${id}`,
+      message: messages.DELETE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Error deleting villain for id:${id}`,
+      message: messages.DELETE_ERROR(id),
       error: error.message,
     });
   }

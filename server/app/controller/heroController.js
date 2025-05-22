@@ -1,17 +1,19 @@
 const Heroes = require("../models/Heroes");
+const Villains = require("../models/Villains");
+const messages = require("../utils/messages");
 
 const getAllHeroes = async (req, res) => {
   try {
-    const heroes = await Heroes.find({});
+    const heroes = await Heroes.find({}).populate("enemies").select("-__v");
     res.status(200).json({
       data: heroes,
       success: true,
-      message: `${req.method} - request to heroes endpoint`,
+      message: messages.RETRIEVE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error retrieving heroes",
+      message: messages.RETRIEVE_ERROR,
       error: error.message,
     });
   }
@@ -20,22 +22,22 @@ const getAllHeroes = async (req, res) => {
 const getHeroById = async (req, res) => {
   const { id } = req.params;
   try {
-    const hero = await Heroes.findById(id);
+    const hero = await Heroes.findById(id).populate("enemies").select("-__v");
     if (!hero) {
       return res.status(404).json({
         success: false,
-        message: `Hero with id: ${id} not found`,
+        message: messages.NOT_FOUND(id),
       });
     }
     res.status(200).json({
       data: hero,
       success: true,
-      message: `${req.method} - request to heroes id: ${id}`,
+      message: messages.RETRIEVE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error retrieving hero",
+      message: messages.RETRIEVE_ERROR,
       error: error.message,
     });
   }
@@ -49,20 +51,20 @@ const createHero = async (req, res) => {
     res.status(201).json({
       data: newHero,
       success: true,
-      message: `${req.method} - request to heroes endpoint`,
+      message: messages.CREATE_SUCCESS,
     });
   } catch (error) {
     console.log("error:", error);
     if (error.name === "ValidationError") {
       return res.status(422).json({
         success: false,
-        message: "Validation error",
+        message: messages.VALIDATION_ERROR,
         error: error.message,
       });
     }
     res.status(500).json({
       success: false,
-      message: "Error creating hero",
+      message: messages.CREATE_ERROR || "Error creating hero",
       error: error.message,
     });
   }
@@ -75,18 +77,18 @@ const updateHero = async (req, res) => {
     if (!hero) {
       return res.status(404).json({
         success: false,
-        message: `Hero with id: ${id} not found`,
+        message: messages.NOT_FOUND(id),
       });
     }
     res.status(200).json({
       data: hero,
       success: true,
-      message: `${req.method} - request to heroes id:${id}`,
+      message: messages.UPDATE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Error updating hero information for id:${id}`,
+      message: messages.UPDATE_ERROR(id),
       error: error.message,
     });
   }
@@ -95,16 +97,22 @@ const updateHero = async (req, res) => {
 const deleteHero = async (req, res) => {
   const { id } = req.params;
   try {
-    const deleteHero = await Heroes.findByIdAndDelete(id);
+    const deletedHero = await Heroes.findByIdAndDelete(id);
+    if (!deletedHero) {
+      return res.status(404).json({
+        success: false,
+        message: messages.NOT_FOUND(id),
+      });
+    }
     res.status(200).json({
-      data: deleteHero,
+      data: deletedHero,
       success: true,
-      message: `${req.method} - request to heroes id:${id}`,
+      message: messages.DELETE_SUCCESS,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: `Error deleting hero for id:${id}`,
+      message: messages.DELETE_ERROR(id),
       error: error.message,
     });
   }
