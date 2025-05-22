@@ -5,7 +5,7 @@ const messages = require("../utils/messages");
 const getAllVillains = async (req, res) => {
   try {
     const villains = await Villains.find({})
-      .populate("archNemesisId")
+      .populate("archNemesisId", "-__v")
       .select("-__v");
     res.status(200).json({
       data: villains,
@@ -25,7 +25,7 @@ const getVillainById = async (req, res) => {
   const { id } = req.params;
   try {
     const villain = await Villains.findById(id)
-      .populate("archNemesisId")
+      .populate("archNemesisId", "-__v")
       .select("-__v");
     if (!villain) {
       return res.status(404).json({

@@ -4,7 +4,9 @@ const messages = require("../utils/messages");
 
 const getAllHeroes = async (req, res) => {
   try {
-    const heroes = await Heroes.find({}).populate("enemies").select("-__v");
+    const heroes = await Heroes.find({})
+      .populate("enemies", "-__v")
+      .select("-__v");
     res.status(200).json({
       data: heroes,
       success: true,
@@ -22,7 +24,9 @@ const getAllHeroes = async (req, res) => {
 const getHeroById = async (req, res) => {
   const { id } = req.params;
   try {
-    const hero = await Heroes.findById(id).populate("enemies").select("-__v");
+    const hero = await Heroes.findById(id)
+      .populate("enemies", "-__v")
+      .select("-__v");
     if (!hero) {
       return res.status(404).json({
         success: false,
