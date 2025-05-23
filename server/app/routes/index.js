@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const heroRoutes = require("./heroRoutes");
+const geoRoutes = require("./geoRoutes");
 
 router.get("/", (req, res) => {
   res.status(200).json({
@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
     availableRoutes: ["/heroes", "/villains"],
   });
 });
-
-router.use("/heroes", heroRoutes);
+//localhost:3000/api/v1/geo-data/
+router.use("/geo-data", geoRoutes);
 
 module.exports = router;
