@@ -1,9 +1,4 @@
-const express = require("express");
-const morgan = require("morgan");
-const app = express();
-
-app.use(morgan("dev"));
-app.use(express.json());
+// This function fetches geolocation data from OpenStreetMap's Nominatim API
 
 async function getGeoData(lati, long) {
   console.log(lati, long);
