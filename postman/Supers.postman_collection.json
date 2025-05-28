@@ -62,6 +62,245 @@
 					"response": []
 				},
 				{
+					"name": "getheros ageRange",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return data\", function(){\r",
+									"    pm.response.to.not.be.error;\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"    pm.response.to.have.jsonBody('data');\r",
+									"    pm.response.to.not.have.jsonBody('error');\r",
+									"    pm.expect(pm.response.json()).to.have.property('data');\r",
+									"})\r",
+									"\r",
+									"pm.test(\"returns based on filter\", function(){\r",
+									"    const [heroObject] = pm.response.json().data;\r",
+									"    pm.expect(heroObject).to.have.property(\"_id\");\r",
+									"    pm.expect(heroObject).to.have.property(\"name\");\r",
+									"    pm.expect(heroObject).to.have.property(\"age\");\r",
+									"    pm.expect(heroObject).to.have.property(\"power\");\r",
+									"    pm.expect(heroObject.name).to.eql(\"Batman\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/heroes?age[gt]=16&age[lt]=30",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"heroes"
+							],
+							"query": [
+								{
+									"key": "age[gt]",
+									"value": "16"
+								},
+								{
+									"key": "age[lt]",
+									"value": "30"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getheros pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return data\", function(){\r",
+									"    pm.response.to.not.be.error;\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"    pm.response.to.have.jsonBody('data');\r",
+									"    pm.response.to.not.have.jsonBody('error');\r",
+									"    pm.expect(pm.response.json()).to.have.property('data');\r",
+									"})\r",
+									"\r",
+									"pm.test(\"3 heroes should return and Each hero should have required fields\", () => {\r",
+									"  const heroes = pm.response.json().data;\r",
+									" pm.expect(heroes.length).to.eql(3);\r",
+									"  heroes.forEach((hero) => {\r",
+									"    pm.expect(hero).to.have.property(\"name\").that.is.a(\"string\");\r",
+									"    pm.expect(hero).to.have.property(\"age\").that.is.a(\"number\");\r",
+									"    pm.expect(hero).to.have.property(\"power\").that.is.an(\"array\");\r",
+									"    pm.expect(hero).to.have.property(\"city\").that.is.a(\"string\");\r",
+									"  });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/heroes?page=1&limit=3",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"heroes"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getheros sort",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return an array of heroes\", () => {\r",
+									"  const data = pm.response.json().data;\r",
+									"  pm.expect(data).to.be.an(\"array\");\r",
+									"  pm.expect(data.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should be sorted by name\", () => {\r",
+									"  const heroes = pm.response.json().data;\r",
+									"\r",
+									"  const names = heroes.map(hero => hero.name);\r",
+									"  const sortedNames = [...names].sort((a, b) => a.localeCompare(b));\r",
+									"\r",
+									"  pm.expect(names).to.eql(sortedNames);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/heroes?limit=5&sort=name",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"heroes"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getheros select name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return an array of heroes\", () => {\r",
+									"  const data = pm.response.json().data;\r",
+									"  pm.expect(data).to.be.an(\"array\");\r",
+									"  pm.expect(data.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each hero should have only name field\", () => {\r",
+									"  const heroes = pm.response.json().data;\r",
+									"\r",
+									"  heroes.forEach((hero) => {\r",
+									"    pm.expect(hero).to.have.property(\"name\").that.is.a(\"string\");\r",
+									"    pm.expect(Object.keys(hero)).to.have.lengthOf(1);\r",
+									"    pm.expect(Object.keys(hero)).to.include(\"name\");\r",
+									"  });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/heroes?select=name",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"heroes"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "postHero",
 					"event": [
 						{
@@ -288,6 +527,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},
@@ -315,13 +562,252 @@
 					"response": []
 				},
 				{
+					"name": "getVillains ageRange",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return data\", function(){\r",
+									"    pm.response.to.not.be.error;\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"    pm.response.to.have.jsonBody('data');\r",
+									"    pm.response.to.not.have.jsonBody('error');\r",
+									"    pm.expect(pm.response.json()).to.have.property('data');\r",
+									"})\r",
+									"\r",
+									"pm.test(\"returns based on filter\", function(){\r",
+									"    const [heroObject] = pm.response.json().data;\r",
+									"    pm.expect(heroObject).to.have.property(\"_id\");\r",
+									"    pm.expect(heroObject).to.have.property(\"name\");\r",
+									"    pm.expect(heroObject).to.have.property(\"age\");\r",
+									"    pm.expect(heroObject).to.have.property(\"power\");\r",
+									"    pm.expect(heroObject.name).to.eql(\"Green Goblin\");\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/villains?age[gt]=32&age[lt]=50",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"villains"
+							],
+							"query": [
+								{
+									"key": "age[gt]",
+									"value": "32"
+								},
+								{
+									"key": "age[lt]",
+									"value": "50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getVillains pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response should return data\", function(){\r",
+									"    pm.response.to.not.be.error;\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"    pm.response.to.have.jsonBody('data');\r",
+									"    pm.response.to.not.have.jsonBody('error');\r",
+									"    pm.expect(pm.response.json()).to.have.property('data');\r",
+									"})\r",
+									"\r",
+									"pm.test(\"3 villains should return and Each hero should have required fields\", () => {\r",
+									"  const villains = pm.response.json().data;\r",
+									" pm.expect(villains.length).to.eql(3);\r",
+									"  villains.forEach((villain) => {\r",
+									"    pm.expect(villain).to.have.property(\"name\").that.is.a(\"string\");\r",
+									"    pm.expect(villain).to.have.property(\"age\").that.is.a(\"number\");\r",
+									"    pm.expect(villain).to.have.property(\"power\").that.is.an(\"array\");\r",
+									"    pm.expect(villain).to.have.property(\"evilPlan\").that.is.a(\"string\");\r",
+									"  });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/villains?page=1&limit=3",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"villains"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getVillains sort",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return an array of heroes\", () => {\r",
+									"  const data = pm.response.json().data;\r",
+									"  pm.expect(data).to.be.an(\"array\");\r",
+									"  pm.expect(data.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should be sorted by name\", () => {\r",
+									"  const villains = pm.response.json().data;\r",
+									"\r",
+									"  const names = villains.map(villain => villain.name);\r",
+									"  const sortedNames = [...names].sort((a, b) => a.localeCompare(b));\r",
+									"\r",
+									"  pm.expect(names).to.eql(sortedNames);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/villains?limit=5&sort=name",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"villains"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getVillains sort Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Should return 200 OK\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Should return an array of heroes\", () => {\r",
+									"  const data = pm.response.json().data;\r",
+									"  pm.expect(data).to.be.an(\"array\");\r",
+									"  pm.expect(data.length).to.be.greaterThan(0);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each hero should have only name field\", () => {\r",
+									"  const villains = pm.response.json().data;\r",
+									"\r",
+									"  villains.forEach((villain) => {\r",
+									"    pm.expect(villain).to.have.property(\"name\").that.is.a(\"string\");\r",
+									"    pm.expect(Object.keys(villain)).to.have.lengthOf(1);\r",
+									"    pm.expect(Object.keys(villain)).to.include(\"name\");\r",
+									"  });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/villains?select=name",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"villains"
+							],
+							"query": [
+								{
+									"key": "select",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "postVillains",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"villain\": {\r\n        \"name\": \"Green Goblin\",\r\n        \"evilPlan\": \"inflicting suffering on Spider-Man and his loved ones.\",\r\n        \"power\": [\"enhanced strength\", \"enhanced stamina\", \"enhanced reflexes\"],\r\n        \"archNemesisId\": \"682bbfc81d54bfa63bfa5e91\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"villain\": {\r\n        \"name\": \"Joker\",\r\n        \"evilPlan\": \"Create chaos\",\r\n        \"power\": [\"Cunning\", \"Manipulation\"],\r\n        \"archNemesisId\": \"682bb9857936192c95941627\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
