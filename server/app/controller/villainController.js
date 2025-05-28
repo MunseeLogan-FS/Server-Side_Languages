@@ -33,17 +33,24 @@ const getAllVillains = async (req, res) => {
       query = query.sort("name");
     }
     if (req.query.select) {
-      const selectFields = req.query.select.split(",").join(" ");
+      let selectFields = req.query.select.split(",").join(" ");
+      if (!selectFields.includes("_id")) {
+        selectFields += " -_id";
+      }
       query = query.select(selectFields);
+    } else {
+      query = query.select("-__v");
+    }
+
+    if (!req.query.select || req.query.select.includes("archNemesisId")) {
+      query = query.populate("archNemesisId", "-__v");
     }
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 2;
     const skip = (page - 1) * limit;
     query.skip(skip).limit(limit);
 
-    const villains = await query
-      .populate("archNemesisId", "-__v")
-      .select("-__v");
+    const villains = await query;
 
     if (villains.length === 0) {
       return res.status(404).json({

@@ -27,6 +27,7 @@ const getAllHeroes = async (req, res) => {
 
     let query = Heroes.find(queryObj);
 
+    console.log("Sorting by:", req.query.sort);
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
@@ -34,16 +35,24 @@ const getAllHeroes = async (req, res) => {
       query = query.sort("name");
     }
     if (req.query.select) {
-      const selectFields = req.query.select.split(",").join(" ");
+      let selectFields = req.query.select.split(",").join(" ");
+      if (!selectFields.includes("_id")) {
+        selectFields += " -_id";
+      }
       query = query.select(selectFields);
+    } else {
+      query = query.select("-__v");
+    }
+
+    if (!req.query.select || req.query.select.includes("enemies")) {
+      query = query.populate("enemies", "-__v");
     }
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 2;
     const skip = (page - 1) * limit;
     query.skip(skip).limit(limit);
 
-    const heroes = await query.populate("enemies", "-__v").select("-__v");
-
+    const heroes = await query;
     if (heroes.length === 0) {
       return res.status(404).json({
         success: false,
