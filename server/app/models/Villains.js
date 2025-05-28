@@ -11,6 +11,11 @@ const villainSchema = mongoose.Schema({
       "Your name is too long, name cannot be longer than 50 characters.",
     ],
   },
+  age: {
+    type: Number,
+    required: [true, "Villains must have an age."],
+    min: [0, "Age cannot be negative."],
+  },
   evilPlan: {
     type: String,
     required: true,
@@ -20,6 +25,7 @@ const villainSchema = mongoose.Schema({
     type: [String],
     required: [true, "All villians must have a power."],
   },
+
   archNemesisId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Hero",

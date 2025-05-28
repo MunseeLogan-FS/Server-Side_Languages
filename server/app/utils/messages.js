@@ -1,5 +1,6 @@
 module.exports = {
   NOT_FOUND: (id) => `Object with id: ${id} not found`,
+  NOT_FOUND_ALL: "No objects found",
   VALIDATION_ERROR: "Validation error",
   CREATE_SUCCESS: "Successfully created object",
   RETRIEVE_SUCCESS: "Successfully retrieved object(s)",

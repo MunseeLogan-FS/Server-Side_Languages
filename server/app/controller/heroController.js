@@ -4,9 +4,53 @@ const messages = require("../utils/messages");
 
 const getAllHeroes = async (req, res) => {
   try {
-    const heroes = await Heroes.find({})
-      .populate("enemies", "-__v")
-      .select("-__v");
+    const excludeFields = ["sort", "page", "limit", "select"];
+    const queryObj = {};
+
+    Object.keys(req.query).forEach((key) => {
+      if (excludeFields.includes(key)) return;
+      const match = key.match(/^([^[]+)(?:\[(gt|gte|lt|lte|eq|ne)\])?$/);
+      if (match) {
+        const field = match[1];
+        const operator = match[2];
+
+        if (operator) {
+          queryObj[field] = queryObj[field] || {};
+          queryObj[field][`$${operator}`] = req.query[key];
+        } else {
+          queryObj[key] = req.query[key];
+        }
+        console.log(queryObj);
+      }
+    });
+    // console.log("Final query:", queryObj);
+
+    let query = Heroes.find(queryObj);
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("name");
+    }
+    if (req.query.select) {
+      const selectFields = req.query.select.split(",").join(" ");
+      query = query.select(selectFields);
+    }
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 2;
+    const skip = (page - 1) * limit;
+    query.skip(skip).limit(limit);
+
+    const heroes = await query.populate("enemies", "-__v").select("-__v");
+
+    if (heroes.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: messages.NOT_FOUND_ALL,
+      });
+    }
+
     res.status(200).json({
       data: heroes,
       success: true,

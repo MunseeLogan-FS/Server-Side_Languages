@@ -14,6 +14,7 @@ const heroSchema = mongoose.Schema({
   age: {
     type: Number,
     required: true,
+    min: [0, "Age cannot be negative."],
   },
   power: {
     type: [String],
