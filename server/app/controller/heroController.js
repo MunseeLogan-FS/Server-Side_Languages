@@ -27,7 +27,6 @@ const getAllHeroes = async (req, res) => {
 
     let query = Heroes.find(queryObj);
 
-    console.log("Sorting by:", req.query.sort);
     if (req.query.sort) {
       const sortBy = req.query.sort.split(",").join(" ");
       query = query.sort(sortBy);
