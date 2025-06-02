@@ -7,6 +7,7 @@ import {
   Field,
   Fieldset,
   Input,
+  Flex,
 } from "@chakra-ui/react";
 import API from "../API";
 
@@ -87,137 +88,139 @@ function Create() {
   });
   return (
     <>
-      <Select.Root
-        collection={superTypes}
-        width="200px"
-        value={superType}
-        onValueChange={(e) => setSuperType(e.value)}
-        style={styles.select}
-      >
-        <Select.HiddenSelect />
+      <Flex direction="column" align={"center"}>
+        <Select.Root
+          collection={superTypes}
+          width="200px"
+          value={superType}
+          onValueChange={(e) => setSuperType(e.value)}
+          style={styles.select}
+        >
+          <Select.HiddenSelect />
 
-        <Select.Control>
-          <Select.Trigger>
-            <Select.ValueText placeholder="Type" />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {superTypes.items.map((supType) => (
-                <Select.Item item={supType} key={supType.value}>
-                  {supType.label}
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>
-      <div>
-        {" "}
-        {superType[0] === "heroes" ? (
-          <Fieldset.Root size="lg" maxW="md">
-            <Fieldset.Content>
-              <Field.Root>
-                <Field.Label>Name</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="name"
-                  value={heroData.hero.name}
-                  onChange={handleChangeHero}
-                />
-              </Field.Root>
-              <Field.Root>
-                <Field.Label>Age</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="age"
-                  value={heroData.hero.age}
-                  onChange={handleChangeHero}
-                />
-              </Field.Root>
+          <Select.Control>
+            <Select.Trigger>
+              <Select.ValueText placeholder="Type" />
+            </Select.Trigger>
+            <Select.IndicatorGroup>
+              <Select.Indicator />
+            </Select.IndicatorGroup>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {superTypes.items.map((supType) => (
+                  <Select.Item item={supType} key={supType.value}>
+                    {supType.label}
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+        </Select.Root>
+        <div>
+          {" "}
+          {superType[0] === "heroes" ? (
+            <Fieldset.Root size="lg" maxW="md">
+              <Fieldset.Content>
+                <Field.Root>
+                  <Field.Label>Name</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="name"
+                    value={heroData.hero.name}
+                    onChange={handleChangeHero}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>Age</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="age"
+                    value={heroData.hero.age}
+                    onChange={handleChangeHero}
+                  />
+                </Field.Root>
 
-              <Field.Root>
-                <Field.Label>Powers</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="power"
-                  value={heroData.hero.power.join(",")}
-                  onChange={handleChangeHero}
-                />
-              </Field.Root>
-              <Field.Root>
-                <Field.Label>City</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="city"
-                  value={heroData.hero.city}
-                  onChange={handleChangeHero}
-                />
-              </Field.Root>
-            </Fieldset.Content>
-            <Button onClick={handleCreate}>Create</Button>
-          </Fieldset.Root>
-        ) : superType[0] === "villains" ? (
-          <Fieldset.Root size="lg" maxW="md">
-            <Fieldset.Content>
-              <Field.Root>
-                <Field.Label>Name</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="name"
-                  value={villainData.villain.name}
-                  onChange={handleChangeVillain}
-                />
-              </Field.Root>
-              <Field.Root>
-                <Field.Label>Age</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="age"
-                  value={villainData.villain.age}
-                  onChange={handleChangeVillain}
-                />
-              </Field.Root>
+                <Field.Root>
+                  <Field.Label>Powers</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="power"
+                    value={heroData.hero.power.join(",")}
+                    onChange={handleChangeHero}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>City</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="city"
+                    value={heroData.hero.city}
+                    onChange={handleChangeHero}
+                  />
+                </Field.Root>
+              </Fieldset.Content>
+              <Button onClick={handleCreate}>Create</Button>
+            </Fieldset.Root>
+          ) : superType[0] === "villains" ? (
+            <Fieldset.Root size="lg" maxW="md">
+              <Fieldset.Content>
+                <Field.Root>
+                  <Field.Label>Name</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="name"
+                    value={villainData.villain.name}
+                    onChange={handleChangeVillain}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>Age</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="age"
+                    value={villainData.villain.age}
+                    onChange={handleChangeVillain}
+                  />
+                </Field.Root>
 
-              <Field.Root>
-                <Field.Label>Powers</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="power"
-                  value={villainData.villain.power.join(",")}
-                  onChange={handleChangeVillain}
-                />
-              </Field.Root>
-              <Field.Root>
-                <Field.Label>Evil Plan</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="evilPlan"
-                  value={villainData.villain.evilPlan}
-                  onChange={handleChangeVillain}
-                />
-              </Field.Root>
-              <Field.Root>
-                <Field.Label>archNemesis Id</Field.Label>
-                <Input
-                  style={styles.input}
-                  name="archNemesisId"
-                  value={villainData.villain.archNemesisId}
-                  onChange={handleChangeVillain}
-                />
-              </Field.Root>
-            </Fieldset.Content>
-            <Button onClick={handleCreate}>Create</Button>
-          </Fieldset.Root>
-        ) : (
-          "Please select a super type."
-        )}
-      </div>
+                <Field.Root>
+                  <Field.Label>Powers</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="power"
+                    value={villainData.villain.power.join(",")}
+                    onChange={handleChangeVillain}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>Evil Plan</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="evilPlan"
+                    value={villainData.villain.evilPlan}
+                    onChange={handleChangeVillain}
+                  />
+                </Field.Root>
+                <Field.Root>
+                  <Field.Label>archNemesis Id</Field.Label>
+                  <Input
+                    style={styles.input}
+                    name="archNemesisId"
+                    value={villainData.villain.archNemesisId}
+                    onChange={handleChangeVillain}
+                  />
+                </Field.Root>
+              </Fieldset.Content>
+              <Button onClick={handleCreate}>Create</Button>
+            </Fieldset.Root>
+          ) : (
+            "Please select a super type."
+          )}
+        </div>
+      </Flex>
     </>
   );
 }
