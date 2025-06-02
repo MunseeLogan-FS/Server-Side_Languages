@@ -31,8 +31,11 @@ API.deleteHeroes = async (type, id) => {
   );
   return response.data.data;
 };
-API.createHeroes = async (type) => {
-  const response = await axios.create(`http://localhost:3001/api/v1/${type}`);
+API.createHeroes = async (type, payload) => {
+  const response = await axios.post(
+    `http://localhost:3001/api/v1/${type}`,
+    payload
+  );
   return response.data.data;
 };
 

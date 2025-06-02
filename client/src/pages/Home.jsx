@@ -161,7 +161,8 @@ function Home() {
                         <Text>
                           {superType[0] === "heroes"
                             ? `Enemies: ${
-                                Array.isArray(sup.enemies)
+                                Array.isArray(sup.enemies) &&
+                                sup.enemies.length > 0
                                   ? sup.enemies
                                       .map((ene) => ene.name)
                                       .join(", ")

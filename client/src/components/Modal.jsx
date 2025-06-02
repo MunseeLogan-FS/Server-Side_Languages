@@ -12,47 +12,72 @@ import API from "../API";
 import React, { useState, useEffect } from "react";
 
 function Modal({ isOpen, onClose, sup, type }) {
-  const [formData, setFormData] = useState({
+  const [heroData, setheroData] = useState({
     name: "",
     age: "",
     powers: "",
-    // city: "",
-    // enemies: "",
-    // evilPlan: "",
-    // archnemesis: "",
+    city: "",
+    enemies: "",
+  });
+  const [villainData, setvillainData] = useState({
+    name: "",
+    age: "",
+    powers: "",
+    evilPlan: "",
+    archnemesis: "",
   });
 
   useEffect(() => {
     if (sup) {
-      setFormData({
-        name: sup.name || "",
-        age: sup.age || "",
-        powers: sup.power?.join(", ") || "",
-        // city: sup.city || "",
-        // enemies: sup.enemies?.map((e) => e.name).join(", ") || "",
-        // evilPlan: sup.evilPlan || "",
-        // archnemesis: sup.archNemesisId?.name || "",
-      });
+      if (type === "heroes") {
+        setheroData({
+          name: sup.name || "",
+          age: sup.age || "",
+          powers: sup.power?.join(", ") || "",
+          city: sup.city || "",
+          enemies: sup.enemies?.map((e) => e._id).join(", ") || "",
+        });
+      } else if (type === "villains") {
+        setvillainData({
+          name: sup.name || "",
+          age: sup.age || "",
+          powers: sup.power?.join(", ") || "",
+          evilPlan: sup.evilPlan || "",
+          archnemesis: sup.archNemesisId?._id || "",
+        });
+      }
     }
   }, [sup]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (type === "heroes") {
+      setheroData((prev) => ({ ...prev, [name]: value }));
+    } else if (type === "villains") {
+      setvillainData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-
-    const updates = {
-      name: formData.name,
-      age: formData.age,
-      power: formData.powers.split(",").map((p) => p.trim()),
-      //   city: formData.city,
-      //   enemies: formData.enemies.split(",").map((e) => ({ name: e.trim() })),
-      //   evilPlan: formData.evilPlan,
-      //   archNemesisId: { name: formData.archnemesis },
-    };
+    let updates = {};
+    if (type === "heroes") {
+      updates = {
+        name: heroData.name,
+        age: heroData.age,
+        power: heroData.powers.split(",").map((p) => p.trim()),
+        city: heroData.city,
+        enemies: heroData.enemies.split(",").map((e) => e.trim()),
+      };
+    } else if (type === "villains") {
+      updates = {
+        name: villainData.name,
+        age: villainData.age,
+        power: villainData.powers.split(",").map((p) => p.trim()),
+        evilPlan: villainData.evilPlan,
+        archNemesisId: villainData.archnemesis,
+      };
+    }
 
     console.log("updaheheashh", updates);
 
@@ -75,7 +100,22 @@ function Modal({ isOpen, onClose, sup, type }) {
   };
 
   const handleDelete = async () => {
-    API.deleteHeroes(type, sup._id);
+    try {
+      API.deleteHeroes(type, sup._id);
+      toaster.create({
+        description: "Delete Success",
+        type: "info",
+        duration: 2000,
+      });
+      onClose();
+    } catch (err) {
+      console.error(err);
+      toaster.create({
+        description: "Delete Failed",
+        type: "info",
+        duration: 2000,
+      });
+    }
   };
 
   if (!sup) return null;
@@ -103,7 +143,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="name"
-                          value={formData.name}
+                          value={heroData.name}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -112,7 +152,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="age"
-                          value={formData.age}
+                          value={heroData.age}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -122,7 +162,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="powers"
-                          value={formData.powers}
+                          value={heroData.powers}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -131,7 +171,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="city"
-                          value={formData.city}
+                          value={heroData.city}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -140,7 +180,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="enemies"
-                          value={formData.enemies}
+                          value={heroData.enemies}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -185,7 +225,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="name"
-                          value={formData.name}
+                          value={villainData.name}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -194,7 +234,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="age"
-                          value={formData.age}
+                          value={villainData.age}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -204,7 +244,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="powers"
-                          value={formData.powers}
+                          value={villainData.powers}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -213,7 +253,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="evilPlan"
-                          value={formData.evilPlan}
+                          value={villainData.evilPlan}
                           onChange={handleChange}
                         />
                       </Field.Root>
@@ -222,7 +262,7 @@ function Modal({ isOpen, onClose, sup, type }) {
                         <Input
                           style={styles.input}
                           name="archnemesis"
-                          value={formData.archnemesis}
+                          value={villainData.archnemesis}
                           onChange={handleChange}
                         />
                       </Field.Root>
