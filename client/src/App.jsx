@@ -1,21 +1,31 @@
-import { useState } from "react";
-import API from "./API.js";
-
-import "./App.css";
+import React from "react";
+import MyNav from "./components/MyNav";
+import { Route, Routes } from "react-router";
+import Home from "./pages/Home";
+import Create from "./pages/Create";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
-  const handleSearch = async (e) => {
-    const data = await API.fetchHeroes();
-    console.log("this is data", data.data.data);
-  };
   return (
-    <>
-      <h1>get super heroes</h1>
-      <div>
-        <button onClick={handleSearch}>click me</button>
-      </div>
-    </>
+    <main style={styles.app}>
+      <Toaster />
+
+      <MyNav />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/add" element={<Create />} />
+      </Routes>
+    </main>
   );
 }
 
 export default App;
+
+const styles = {
+  app: {
+    backgroundColor: "#1A365D",
+    minHeight: "100vh",
+  },
+};
